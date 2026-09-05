@@ -157,9 +157,28 @@ const getLeaderboard = async (req, res) => {
   }
 };
 
+const getMunicipalUsers = async (req, res) => {
+  try {
+    const users = await User.find({
+      role: "municipal",
+    }).select("name email");
+
+    res.status(200).json({
+      users,
+    });
+  } catch (error) {
+    console.error("Get municipal users error:", error.message);
+
+    res.status(500).json({
+      message: "Server error",
+    });
+  }
+};
+
 module.exports = {
   registerUser,
   loginUser,
   getMe,
   getLeaderboard,
+  getMunicipalUsers,
 };

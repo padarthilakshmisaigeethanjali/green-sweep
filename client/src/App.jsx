@@ -9,6 +9,8 @@ import CreateReport from "./pages/CreateReport";
 import ReportDetails from "./pages/ReportDetails";
 import MunicipalDashboard from "./pages/MunicipalDashboard";
 
+import AdminDashboard from "./pages/AdminDashboard";
+
 function Home() {
   return (
     <div className="min-h-screen bg-[#F7F8F3]">
@@ -151,6 +153,19 @@ function App() {
           isAuthenticated &&
           (user?.role === "municipal" || user?.role === "admin") ? (
             <MunicipalDashboard />
+          ) : isAuthenticated ? (
+            <Navigate to="/dashboard" replace />
+          ) : (
+            <Navigate to="/login" replace />
+          )
+        }
+      />
+
+      <Route
+        path="/admin"
+        element={
+          isAuthenticated && user?.role === "admin" ? (
+            <AdminDashboard />
           ) : isAuthenticated ? (
             <Navigate to="/dashboard" replace />
           ) : (

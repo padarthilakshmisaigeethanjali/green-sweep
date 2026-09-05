@@ -154,12 +154,21 @@ function Dashboard() {
     <div className="min-h-screen bg-[#F7F8F3]">
       <nav className="border-b border-[#E3E8E4] bg-white">
         <div className="flex items-center gap-4">
-          {(user?.role === "municipal" || user?.role === "admin") && (
+          {user?.role === "municipal" && (
             <Link
               to="/municipal"
               className="rounded-lg border border-[#D4DDD7] px-4 py-2 text-sm font-medium text-[#173F35] transition hover:bg-[#F0F3EE]"
             >
               Operations
+            </Link>
+          )}
+
+          {user?.role === "admin" && (
+            <Link
+              to="/admin"
+              className="rounded-lg border border-[#D4DDD7] px-4 py-2 text-sm font-medium text-[#173F35] transition hover:bg-[#F0F3EE]"
+            >
+              Admin
             </Link>
           )}
 
