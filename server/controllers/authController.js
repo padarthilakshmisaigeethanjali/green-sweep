@@ -4,16 +4,36 @@ const jwt = require("jsonwebtoken");
 
 const registerUser = async (req, res) => {
   try {
-    const { name, email, password } = req.body;
+    const name = req.body.name?.trim();
+    const email = req.body.email?.trim().toLowerCase();
+    const password = req.body.password;
 
-    // 1. Validate input
     if (!name || !email || !password) {
       return res.status(400).json({
         message: "Please provide name, email, and password",
       });
     }
 
-    // 2. Check whether email already exists
+    if (name.length < 2 || name.length > 100) {
+      return res.status(400).json({
+        message: "Name must be between 2 and 100 characters",
+      });
+    }
+
+    if (password.length < 6) {
+      return res.status(400).json({
+        message: "Password must be at least 6 characters",
+      });
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (!emailRegex.test(email)) {
+      return res.status(400).json({
+        message: "Please provide a valid email address",
+      });
+    }
+
     const existingUser = await User.findOne({ email });
 
     if (existingUser) {
@@ -22,17 +42,14 @@ const registerUser = async (req, res) => {
       });
     }
 
-    // 3. Hash password
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // 4. Create user
     const user = await User.create({
       name,
       email,
       password: hashedPassword,
     });
 
-    // 5. Send response without password
     res.status(201).json({
       message: "User registered successfully",
       user: {
@@ -54,16 +71,15 @@ const registerUser = async (req, res) => {
 
 const loginUser = async (req, res) => {
   try {
-    const { email, password } = req.body;
+    const email = req.body.email?.trim().toLowerCase();
+    const password = req.body.password;
 
-    // 1. Validate input
     if (!email || !password) {
       return res.status(400).json({
         message: "Please provide email and password",
       });
     }
 
-    // 2. Find user by email
     const user = await User.findOne({ email });
 
     if (!user) {
@@ -72,7 +88,6 @@ const loginUser = async (req, res) => {
       });
     }
 
-    // 3. Compare password with stored hash
     const isPasswordValid = await bcrypt.compare(password, user.password);
 
     if (!isPasswordValid) {
@@ -81,7 +96,6 @@ const loginUser = async (req, res) => {
       });
     }
 
-    // 4. Create JWT
     const token = jwt.sign(
       {
         userId: user._id,
@@ -93,7 +107,6 @@ const loginUser = async (req, res) => {
       },
     );
 
-    // 5. Send token and safe user information
     res.status(200).json({
       message: "Login successful",
       token,

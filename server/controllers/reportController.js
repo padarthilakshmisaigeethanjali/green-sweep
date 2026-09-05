@@ -4,7 +4,9 @@ const uploadToCloudinary = require("../config/uploadToCloudinary");
 // Create a new report
 const createReport = async (req, res) => {
   try {
-    const { title, description, category } = req.body;
+    const title = req.body.title?.trim();
+    const description = req.body.description?.trim();
+    const category = req.body.category;
 
     let location;
 
@@ -19,15 +21,47 @@ const createReport = async (req, res) => {
       });
     }
 
-    if (
-      !title?.trim() ||
-      !description?.trim() ||
-      !category ||
-      !location?.address?.trim()
-    ) {
+    if (!title || !description || !category || !location?.address?.trim()) {
       return res.status(400).json({
         message: "Please provide title, description, category, and location",
       });
+    }
+
+    const allowedCategories = [
+      "garbage",
+      "illegal_dumping",
+      "damaged_public_property",
+      "overflowing_bin",
+      "other",
+    ];
+
+    if (!allowedCategories.includes(category)) {
+      return res.status(400).json({
+        message: "Invalid report category",
+      });
+    }
+
+    let latitude;
+    let longitude;
+
+    if (location.latitude !== undefined && location.latitude !== "") {
+      latitude = Number(location.latitude);
+
+      if (!Number.isFinite(latitude) || latitude < -90 || latitude > 90) {
+        return res.status(400).json({
+          message: "Invalid latitude",
+        });
+      }
+    }
+
+    if (location.longitude !== undefined && location.longitude !== "") {
+      longitude = Number(location.longitude);
+
+      if (!Number.isFinite(longitude) || longitude < -180 || longitude > 180) {
+        return res.status(400).json({
+          message: "Invalid longitude",
+        });
+      }
     }
 
     let imageUrl = "";
@@ -42,20 +76,14 @@ const createReport = async (req, res) => {
     }
 
     const report = await Report.create({
-      title: title.trim(),
-      description: description.trim(),
+      title,
+      description,
       category,
       imageUrl,
       location: {
         address: location.address.trim(),
-        latitude:
-          location.latitude !== undefined && location.latitude !== ""
-            ? Number(location.latitude)
-            : undefined,
-        longitude:
-          location.longitude !== undefined && location.longitude !== ""
-            ? Number(location.longitude)
-            : undefined,
+        latitude,
+        longitude,
       },
       reportedBy: req.user.userId,
     });
@@ -65,9 +93,7 @@ const createReport = async (req, res) => {
       report,
     });
   } catch (error) {
-    console.error("Create report error:", error);
-    console.error("Error message:", error.message);
-    console.error("Error stack:", error.stack);
+    console.error("Create report error:", error.message);
 
     res.status(500).json({
       message: "Server error",

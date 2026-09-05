@@ -165,9 +165,7 @@ const verifyCleanup = async (req, res) => {
       });
     }
 
-    const volunteer = await require("../models/User").findById(
-      cleanup.volunteer,
-    );
+    const volunteer = await User.findById(cleanup.volunteer);
 
     if (!volunteer) {
       return res.status(404).json({
