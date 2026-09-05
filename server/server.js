@@ -21,7 +21,7 @@ app.use("/api/reports", reportRoutes);
 app.use("/api/cleanups", cleanupRoutes);
 app.get("/", (req, res) => {
   res.json({
-    message: "Planet Earth API is running",
+    message: "Green-Sweep API is running",
   });
 });
 
