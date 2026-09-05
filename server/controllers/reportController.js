@@ -1,22 +1,62 @@
 const Report = require("../models/Report");
+const uploadToCloudinary = require("../config/uploadToCloudinary");
 
 // Create a new report
 const createReport = async (req, res) => {
   try {
-    const { title, description, category, imageUrl, location } = req.body;
+    const { title, description, category } = req.body;
 
-    if (!title || !description || !category || !location?.address) {
+    let location;
+
+    try {
+      location =
+        typeof req.body.location === "string"
+          ? JSON.parse(req.body.location)
+          : req.body.location;
+    } catch (error) {
+      return res.status(400).json({
+        message: "Invalid location data",
+      });
+    }
+
+    if (
+      !title?.trim() ||
+      !description?.trim() ||
+      !category ||
+      !location?.address?.trim()
+    ) {
       return res.status(400).json({
         message: "Please provide title, description, category, and location",
       });
     }
 
+    let imageUrl = "";
+
+    if (req.file) {
+      const uploadResult = await uploadToCloudinary(
+        req.file.buffer,
+        "green-sweep/reports",
+      );
+
+      imageUrl = uploadResult.secure_url;
+    }
+
     const report = await Report.create({
-      title,
-      description,
+      title: title.trim(),
+      description: description.trim(),
       category,
-      imageUrl: imageUrl || "",
-      location,
+      imageUrl,
+      location: {
+        address: location.address.trim(),
+        latitude:
+          location.latitude !== undefined && location.latitude !== ""
+            ? Number(location.latitude)
+            : undefined,
+        longitude:
+          location.longitude !== undefined && location.longitude !== ""
+            ? Number(location.longitude)
+            : undefined,
+      },
       reportedBy: req.user.userId,
     });
 
@@ -25,7 +65,9 @@ const createReport = async (req, res) => {
       report,
     });
   } catch (error) {
-    console.error("Create report error:", error.message);
+    console.error("Create report error:", error);
+    console.error("Error message:", error.message);
+    console.error("Error stack:", error.stack);
 
     res.status(500).json({
       message: "Server error",

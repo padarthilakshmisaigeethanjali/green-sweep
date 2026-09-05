@@ -1,5 +1,7 @@
 const Cleanup = require("../models/Cleanup");
 const Report = require("../models/Report");
+const User = require("../models/User");
+const uploadToCloudinary = require("../config/uploadToCloudinary");
 
 // Claim a report for cleanup
 const claimCleanup = async (req, res) => {
@@ -97,27 +99,39 @@ const submitCleanup = async (req, res) => {
 
     if (cleanup.volunteer.toString() !== req.user.userId) {
       return res.status(403).json({
-        message: "You can only update your own cleanup",
+        message: "You can only submit your own cleanup",
       });
     }
 
     if (cleanup.status !== "claimed" && cleanup.status !== "in_progress") {
       return res.status(400).json({
-        message: "Cleanup cannot be submitted in its current state",
+        message: "Cleanup cannot be submitted in its current status",
       });
     }
 
-    cleanup.status = "submitted";
-
-    if (req.body.proofImage) {
-      cleanup.proofImage = req.body.proofImage;
+    if (!req.file) {
+      return res.status(400).json({
+        message: "Please upload a proof image",
+      });
     }
+
+    const uploadResult = await uploadToCloudinary(
+      req.file.buffer,
+      "green-sweep/cleanup-proofs",
+    );
+
+    cleanup.proofImage = uploadResult.secure_url;
+    cleanup.status = "submitted";
 
     await cleanup.save();
 
+    const updatedCleanup = await Cleanup.findById(cleanup._id)
+      .populate("volunteer", "name email")
+      .populate("report");
+
     res.status(200).json({
-      message: "Cleanup submitted for verification",
-      cleanup,
+      message: "Cleanup submitted successfully",
+      cleanup: updatedCleanup,
     });
   } catch (error) {
     console.error("Submit cleanup error:", error.message);

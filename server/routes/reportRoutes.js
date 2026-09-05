@@ -1,5 +1,7 @@
 const express = require("express");
 
+const upload = require("../middleware/uploadMiddleware");
+
 const {
   createReport,
   getReports,
@@ -14,7 +16,7 @@ const authorize = require("../middleware/roleMiddleware");
 
 const router = express.Router();
 
-router.post("/", protect, createReport);
+router.post("/", protect, upload.single("image"), createReport);
 
 router.get("/", protect, getReports);
 
