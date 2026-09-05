@@ -1,30 +1,39 @@
-# Green-Sweep
+# 🌿 Green-Sweep
 
-Green-Sweep is a full-stack community cleanup platform that allows citizens to report environmental issues, participate in cleanups, and earn points for verified contributions.
+**Green-Sweep** is a full-stack community cleanup platform that allows citizens to report environmental issues, participate in cleanups, and earn points for verified contributions.
 
-## Screenshots
+---
 
-### Report Creation
+## 📸 Screenshots
 
-![Create Report](./screenshots/create-report.png)
+<p align="center"><i>1) Report Creation</i></p>
+<p align="center">
+  <img src="./screenshots/create-report.png" alt="Create Report" width="60%">
+</p>
 
-### Report Details
+<p align="center"><i>2) Report Details</i></p>
+<p align="center">
+  <img src="./screenshots/report-details.png" alt="Report Details" width="60%">
+</p>
 
-![Report Details](./screenshots/report-details.png)
+<p align="center"><i>3) Citizen Dashboard</i></p>
+<p align="center">
+  <img src="./screenshots/citizen-dashboard.png" alt="Citizen Dashboard" width="60%">
+</p>
 
-### Citizen Dashboard
+<p align="center"><i>4) Admin Dashboard</i></p>
+<p align="center">
+  <img src="./screenshots/admin-dashboard.png" alt="Admin Dashboard" width="60%">
+</p>
 
-![Citizen Dashboard](./screenshots/citizen-dashboard.png)
+<p align="center"><i>5) Municipal Dashboard</i></p>
+<p align="center">
+  <img src="./screenshots/municipal-dashboard.png" alt="Municipal Dashboard" width="60%">
+</p>
 
-### Admin Dashboard
+---
 
-![Admin Dashboard](./screenshots/admin-dashboard.png)
-
-### Municipal Dashboard
-
-![Municipal Dashboard](./screenshots/municipal-dashboard.png)
-
-## Features
+## ✨ Features
 
 - User authentication with JWT
 - Role-based access control
@@ -38,10 +47,9 @@ Green-Sweep is a full-stack community cleanup platform that allows citizens to r
 - Automatic points for verified cleanups
 - Community leaderboard
 
-## User Roles
+## 👥 User Roles
 
 ### Citizen
-
 - Register and log in
 - Report public-space issues
 - Claim cleanup tasks
@@ -50,44 +58,26 @@ Green-Sweep is a full-stack community cleanup platform that allows citizens to r
 - View leaderboard
 
 ### Municipal Officer
-
 - View assigned reports
 - Manage cleanup operations
 - Review submitted cleanup proof
 - Verify or reject cleanup submissions
 
 ### Admin
-
 - View all reports
 - Update report status
 - Assign reports to municipal officers
 - Monitor cleanup operations
 
-## Tech Stack
+## 🧰 Tech Stack
 
-### Frontend
+| Layer | Technologies |
+|---|---|
+| **Frontend** | React, React Router, Tailwind CSS, Axios, Vite |
+| **Backend** | Node.js, Express.js, MongoDB, Mongoose, JWT, bcryptjs |
+| **Cloud Services** | MongoDB Atlas, Cloudinary |
 
-- React
-- React Router
-- Tailwind CSS
-- Axios
-- Vite
-
-### Backend
-
-- Node.js
-- Express.js
-- MongoDB
-- Mongoose
-- JWT
-- bcryptjs
-
-### Cloud Services
-
-- MongoDB Atlas
-- Cloudinary
-
-## Project Structure
+## 📁 Project Structure
 
 ```text
 green-sweep/
@@ -112,23 +102,23 @@ green-sweep/
 └── README.md
 ```
 
-## Getting Started
+## 🚀 Getting Started
 
-1. Clone the repository
+### 1. Clone the repository
 
 ```bash
 git clone <your-repository-url>
 cd green-sweep
 ```
 
-2. Install backend dependencies
+### 2. Install backend dependencies
 
 ```bash
 cd server
 npm install
 ```
 
-3. Configure environment variables
+### 3. Configure environment variables
 
 Create a `.env` file inside `server/` using `.env.example` as a template.
 
@@ -141,7 +131,7 @@ CLOUDINARY_API_KEY=your_cloudinary_api_key
 CLOUDINARY_API_SECRET=your_cloudinary_api_secret
 ```
 
-4. Start the backend
+### 4. Start the backend
 
 ```bash
 npm run dev
@@ -153,7 +143,7 @@ The API runs on:
 http://localhost:5000
 ```
 
-5. Install frontend dependencies
+### 5. Install frontend dependencies
 
 Open another terminal:
 
@@ -162,7 +152,7 @@ cd client
 npm install
 ```
 
-6. Start the frontend
+### 6. Start the frontend
 
 ```bash
 npm run dev
@@ -170,7 +160,7 @@ npm run dev
 
 The frontend will run on the Vite development server.
 
-## Cleanup Workflow
+## 🔄 Cleanup Workflow
 
 ```text
 Citizen reports issue
@@ -192,7 +182,7 @@ Cleanup completed
 Citizen receives 50 points
 ```
 
-## Report Status
+## 📋 Report Status
 
 - `reported`
 - `under_review`
@@ -200,7 +190,7 @@ Citizen receives 50 points
 - `cleanup_in_progress`
 - `completed`
 
-## Cleanup Status
+## 🧹 Cleanup Status
 
 - `claimed`
 - `in_progress`
@@ -208,7 +198,7 @@ Citizen receives 50 points
 - `verified`
 - `rejected`
 
-## Security
+## 🔒 Security
 
 - Passwords are hashed with bcrypt
 - JWT authentication protects private API routes
@@ -216,6 +206,6 @@ Citizen receives 50 points
 - Environment variables are used for secrets
 - Uploaded files are restricted to images and limited to 5 MB
 
-## License
+## 📄 License
 
 This project was developed as a portfolio project.
