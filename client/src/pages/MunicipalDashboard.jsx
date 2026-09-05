@@ -52,9 +52,6 @@ function MunicipalDashboard() {
         api.get("/cleanups"),
       ]);
 
-      console.log("Municipal reports:", reportsResponse.data);
-      console.log("Municipal cleanups:", cleanupsResponse.data);
-
       setReports(reportsResponse.data.reports);
       setCleanups(cleanupsResponse.data.cleanups);
     } catch (error) {
