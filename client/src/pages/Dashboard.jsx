@@ -30,6 +30,24 @@ function Dashboard() {
   const [proofPreview, setProofPreview] = useState("");
   const [submitting, setSubmitting] = useState(false);
 
+  const [leaderboard, setLeaderboard] = useState([]);
+  const [loadingLeaderboard, setLoadingLeaderboard] = useState(true);
+
+  const fetchLeaderboard = async () => {
+    try {
+      const response = await api.get("/auth/leaderboard");
+
+      setLeaderboard(response.data.leaderboard);
+    } catch (error) {
+      console.error(
+        "Failed to load leaderboard:",
+        error.response?.data?.message || error.message,
+      );
+    } finally {
+      setLoadingLeaderboard(false);
+    }
+  };
+
   const fetchCleanups = async () => {
     try {
       setCleanupError("");
@@ -58,8 +76,10 @@ function Dashboard() {
   useEffect(() => {
     if (user?.role === "citizen") {
       fetchCleanups();
+      fetchLeaderboard();
     } else {
       setLoadingCleanups(false);
+      setLoadingLeaderboard(false);
     }
   }, [user]);
 
@@ -133,30 +153,28 @@ function Dashboard() {
   return (
     <div className="min-h-screen bg-[#F7F8F3]">
       <nav className="border-b border-[#E3E8E4] bg-white">
-        <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-5">
-          <Link
-            to="/dashboard"
-            className="text-xl font-bold tracking-tight text-[#173F35]"
-          >
-            Green-Sweep
-          </Link>
-
-          <div className="flex items-center gap-5">
-            <div className="hidden text-right sm:block">
-              <p className="text-sm font-semibold text-[#173F35]">
-                {user?.name}
-              </p>
-
-              <p className="text-xs capitalize text-[#66736C]">{user?.role}</p>
-            </div>
-
-            <button
-              onClick={logout}
+        <div className="flex items-center gap-4">
+          {(user?.role === "municipal" || user?.role === "admin") && (
+            <Link
+              to="/municipal"
               className="rounded-lg border border-[#D4DDD7] px-4 py-2 text-sm font-medium text-[#173F35] transition hover:bg-[#F0F3EE]"
             >
-              Logout
-            </button>
+              Operations
+            </Link>
+          )}
+
+          <div className="hidden text-right sm:block">
+            <p className="text-sm font-semibold text-[#173F35]">{user?.name}</p>
+
+            <p className="text-xs capitalize text-[#66736C]">{user?.role}</p>
           </div>
+
+          <button
+            onClick={logout}
+            className="rounded-lg border border-[#D4DDD7] px-4 py-2 text-sm font-medium text-[#173F35] transition hover:bg-[#F0F3EE]"
+          >
+            Logout
+          </button>
         </div>
       </nav>
 
@@ -237,6 +255,72 @@ function Dashboard() {
               </p>
             </div>
 
+            {user?.role === "citizen" && (
+              <section className="mt-10">
+                <div className="mb-5">
+                  <p className="text-sm font-medium text-[#2F7D5B]">
+                    Community recognition
+                  </p>
+
+                  <h2 className="mt-1 text-2xl font-bold text-[#173F35]">
+                    Leaderboard
+                  </h2>
+
+                  <p className="mt-1 text-sm text-[#66736C]">
+                    Top community members by verified cleanup points.
+                  </p>
+                </div>
+
+                <div className="overflow-hidden rounded-2xl border border-[#E3E8E4] bg-white shadow-sm">
+                  {loadingLeaderboard ? (
+                    <div className="p-8 text-center text-sm text-[#66736C]">
+                      Loading leaderboard...
+                    </div>
+                  ) : leaderboard.length === 0 ? (
+                    <div className="p-8 text-center text-sm text-[#66736C]">
+                      No leaderboard data yet.
+                    </div>
+                  ) : (
+                    <div>
+                      {leaderboard.map((member, index) => (
+                        <div
+                          key={member._id}
+                          className="flex items-center justify-between border-b border-[#E3E8E4] px-6 py-4 last:border-b-0"
+                        >
+                          <div className="flex items-center gap-4">
+                            <div className="flex h-9 w-9 items-center justify-center rounded-full bg-[#DCE9DF] text-sm font-bold text-[#2F7D5B]">
+                              {index + 1}
+                            </div>
+
+                            <div>
+                              <p className="font-semibold text-[#173F35]">
+                                {member.name}
+                              </p>
+
+                              {member._id === user?.id && (
+                                <p className="text-xs font-medium text-[#2F7D5B]">
+                                  You
+                                </p>
+                              )}
+                            </div>
+                          </div>
+
+                          <div className="text-right">
+                            <p className="font-bold text-[#173F35]">
+                              {member.points}
+                            </p>
+
+                            <p className="text-xs text-[#66736C]">points</p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </section>
+            )}
+            <br />
+            <br />
             {cleanupError && (
               <div className="mb-5 rounded-xl border border-red-100 bg-red-50 p-4 text-sm text-red-600">
                 {cleanupError}

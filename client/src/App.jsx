@@ -7,6 +7,7 @@ import Dashboard from "./pages/Dashboard";
 import Reports from "./pages/Reports";
 import CreateReport from "./pages/CreateReport";
 import ReportDetails from "./pages/ReportDetails";
+import MunicipalDashboard from "./pages/MunicipalDashboard";
 
 function Home() {
   return (
@@ -63,19 +64,16 @@ function Home() {
           <div className="mx-auto mt-16 grid max-w-2xl grid-cols-3 border-t border-[#E3E8E4] pt-8">
             <div>
               <p className="text-2xl font-bold text-[#173F35]">Report</p>
-
               <p className="mt-1 text-sm text-[#66736C]">Spot an issue</p>
             </div>
 
             <div className="border-x border-[#E3E8E4]">
               <p className="text-2xl font-bold text-[#173F35]">Act</p>
-
               <p className="mt-1 text-sm text-[#66736C]">Join a cleanup</p>
             </div>
 
             <div>
               <p className="text-2xl font-bold text-[#173F35]">Earn</p>
-
               <p className="mt-1 text-sm text-[#66736C]">Make an impact</p>
             </div>
           </div>
@@ -86,7 +84,15 @@ function Home() {
 }
 
 function App() {
-  const { isAuthenticated } = useAuth();
+  const { user, isAuthenticated, loading } = useAuth();
+
+  if (loading) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-[#F7F8F3] text-[#66736C]">
+        Loading...
+      </div>
+    );
+  }
 
   return (
     <Routes>
@@ -117,6 +123,7 @@ function App() {
           isAuthenticated ? <Dashboard /> : <Navigate to="/login" replace />
         }
       />
+
       <Route
         path="/reports"
         element={
@@ -135,6 +142,20 @@ function App() {
         path="/reports/:id"
         element={
           isAuthenticated ? <ReportDetails /> : <Navigate to="/login" replace />
+        }
+      />
+
+      <Route
+        path="/municipal"
+        element={
+          isAuthenticated &&
+          (user?.role === "municipal" || user?.role === "admin") ? (
+            <MunicipalDashboard />
+          ) : isAuthenticated ? (
+            <Navigate to="/dashboard" replace />
+          ) : (
+            <Navigate to="/login" replace />
+          )
         }
       />
     </Routes>
