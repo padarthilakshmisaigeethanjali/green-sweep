@@ -2,6 +2,28 @@
 
 Green-Sweep is a full-stack community cleanup platform that allows citizens to report environmental issues, participate in cleanups, and earn points for verified contributions.
 
+## Screenshots
+
+### Report Creation
+
+![Create Report](./screenshots/create-report.png)
+
+### Report Details
+
+![Report Details](./screenshots/report-details.png)
+
+### Citizen Dashboard
+
+![Citizen Dashboard](./screenshots/citizen-dashboard.png)
+
+### Admin Dashboard
+
+![Admin Dashboard](./screenshots/admin-dashboard.png)
+
+### Municipal Dashboard
+
+![Municipal Dashboard](./screenshots/municipal-dashboard.png)
+
 ## Features
 
 - User authentication with JWT
